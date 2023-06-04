@@ -54,8 +54,15 @@ abstract public class AbstractSkipList {
                 prevNode = prevNode.getPrev(level);
             }
         }
-        Node curNode = newNode;
+        
+        // adjust sizes of this node
+        for (int level = 0; level <= nodeHeight; level++) {
+        	newNode.size.set(level, getSize(newNode, level));
+        }
+        
+        // adjust sizes of nodes preceding newly inserted node
         int level = 0;
+        Node curNode = newNode.getPrev(level);
         while(head.height >= level) {
         	if (curNode.height >= level) {
         		curNode.size.set(level, getSize(curNode, level));
