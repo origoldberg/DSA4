@@ -7,7 +7,7 @@ public class IndexableSkipList extends AbstractSkipList {
         super();
         this.probability = probability;
         rand = new Random();
-        rand.setSeed(15);
+//        rand.setSeed(15);
     }
 
     @Override

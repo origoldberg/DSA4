@@ -10,12 +10,11 @@ public class Test {
 		AbstractSkipList sl = new IndexableSkipList(0.5);
 		
 		List<Integer> lst = new ArrayList<Integer>();
-//		for (int i = 0; i <= 10; i++) {
-//			lst.add(2*i);
-//		}
-		lst.add(4);
-		lst.add(2);
-		lst.add(6);
+		for (int i = 0; i <= 10; i++) {
+			lst.add(2*i);
+		}
+		
+		Collections.shuffle(lst);
 		
 		for (Iterator iterator = lst.iterator(); iterator.hasNext();) {
 			Integer integer = (Integer) iterator.next();
