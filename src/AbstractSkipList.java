@@ -15,7 +15,6 @@ abstract public class AbstractSkipList {
 
     public void increaseHeight() {
         head.addLevel(tail, null);
-        head.size.set(head.height, getSize(head, head.height));
         tail.addLevel(null, head);
     }
 
@@ -28,7 +27,7 @@ abstract public class AbstractSkipList {
 
         return curr.key() == key ? curr : null;
     }
-
+    
     public Node insert(int key) {
         int nodeHeight = generateHeight();
 
@@ -59,18 +58,7 @@ abstract public class AbstractSkipList {
         for (int level = 0; level <= nodeHeight; level++) {
         	newNode.size.set(level, getSize(newNode, level));
         }
-        
-        // adjust sizes of nodes preceding newly inserted node
-        int level = 0;
-        Node curNode = newNode.getPrev(level);
-        while(head.height >= level) {
-        	if (curNode.height >= level) {
-        		curNode.size.set(level, getSize(curNode, level));
-        		level++;
-        	} else {
-        		curNode = curNode.getPrev(level - 1);
-        	}
-        }
+
         return newNode;
     }
     
@@ -148,13 +136,13 @@ abstract public class AbstractSkipList {
 
         return str.toString();
     }
-
+    
     public static class Node {
         final private List<Node> next;
         final private List<Node> prev;
-        final private List<Integer> size; //added
-        private int height;
-        final private int key;
+        final protected List<Integer> size; //added
+        protected int height;
+        final protected int key;
 
         public Node(int key) {
             next = new ArrayList<>();
