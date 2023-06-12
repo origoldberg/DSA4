@@ -1,5 +1,6 @@
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 public class ChainedHashTable<K, V> implements HashTable<K, V> {
@@ -9,6 +10,9 @@ public class ChainedHashTable<K, V> implements HashTable<K, V> {
     final private double maxLoadFactor;
     private int capacity;
     private HashFunctor<K> hashFunc;
+    private LinkedList<Item<K,V>>[] table;
+    private int size;
+    private int k;
 
 
     /*
@@ -19,23 +23,70 @@ public class ChainedHashTable<K, V> implements HashTable<K, V> {
         this(hashFactory, DEFAULT_INIT_CAPACITY, DEFAULT_MAX_LOAD_FACTOR);
     }
 
-    public ChainedHashTable(HashFactory<K> hashFactory, int k, double maxLoadFactor) {
+    @SuppressWarnings("unchecked")
+	public ChainedHashTable(HashFactory<K> hashFactory, int k, double maxLoadFactor) {
         this.hashFactory = hashFactory;
         this.maxLoadFactor = maxLoadFactor;
-        this.capacity = 1 << k;
+        this.capacity = 1 << k; 
         this.hashFunc = hashFactory.pickHash(k);
+        this.table = new LinkedList[capacity];
+        this.size = 0;
+        this.k = k;
     }
 
     public V search(K key) {
-        throw new UnsupportedOperationException("Replace this by your implementation");
+        int index = hashFunc.hash(key);
+        LinkedList<Item<K,V>> lst = table[index];
+        if(lst == null)
+        	return null;
+        for (Iterator<Item<K, V>> iterator = lst.iterator(); iterator.hasNext();) {
+			Item<K, V> item = (Item<K, V>) iterator.next();
+			if(item.k.equals(key))
+				return item.v;
+		}
+        return null;
     }
 
     public void insert(K key, V value) {
-        throw new UnsupportedOperationException("Replace this by your implementation");
+    	if(size+1 >= maxLoadFactor*capacity)
+    		rehash();
+    	int index = hashFunc.hash(key);
+        LinkedList<Item<K,V>> lst = table[index];
+        if(lst == null)
+        	lst = new LinkedList<Item<K,V>>();
+        lst.add(new Item<K, V>(key,value));
+        size++;
+    }
+    
+    public void rehash(){
+    	ChainedHashTable<K, V> newHash = new ChainedHashTable<K,V>(hashFactory, k+1, maxLoadFactor);
+        for (int i = 0; i < table.length; i++) {
+			LinkedList<Item<K,V>> lst = table[i];
+			if(lst != null) {
+				for (Item<K, V> item : lst) {
+					newHash.insert(item.k, item.v);
+				}				
+			}
+		}
+        capacity *= 2;
+        k++;
+        table = newHash.table;
+        hashFunc = newHash.hashFunc;
     }
 
     public boolean delete(K key) {
-        throw new UnsupportedOperationException("Replace this by your implementation");
+        int index = hashFunc.hash(key);
+        LinkedList<Item<K,V>> lst = table[index];
+        if(lst == null)
+        	return false;
+        for (Iterator<Item<K, V>> iterator = lst.iterator(); iterator.hasNext();) {
+			Item<K, V> item = (Item<K, V>) iterator.next();
+			if(item.k.equals(key)) {
+				size--;
+				return lst.remove(item);
+			}
+		}
+        return false;
     }
 
     public HashFunctor<K> getHashFunc() {
@@ -43,4 +94,16 @@ public class ChainedHashTable<K, V> implements HashTable<K, V> {
     }
 
     public int capacity() { return capacity; }
+    
+    public static class Item<K,V>{
+    	K k;
+    	V v;
+    	
+		public Item(K k, V v) {
+			super();
+			this.k = k;
+			this.v = v;
+		}
+    	
+    }
 }

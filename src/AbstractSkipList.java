@@ -54,28 +54,12 @@ abstract public class AbstractSkipList {
             }
         }
         
-        // adjust sizes of this node
-        for (int level = 0; level <= nodeHeight; level++) {
-        	newNode.size.set(level, getSize(newNode, level));
-        }
+
 
         return newNode;
     }
     
-    public int getSize(Node n, int level) {
-    	if(level == 0) {
-    		if(n == head)
-    			return 0;
-    		return 1;
-    	}
-    	Node cur = n;
-    	int size = 0;
-    	while(cur != null && cur != n.getNext(level)) {
-    		size += cur.size.get(level - 1);
-    		cur = cur.getNext(level - 1);
-    	}
-    	return size;
-    }
+
 
     public boolean delete(Node node) {
         for (int level = 0; level <= node.height(); ++level) {

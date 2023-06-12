@@ -1,4 +1,5 @@
 import java.math.BigInteger;
+import java.util.Iterator;
 import java.util.List;
 import java.util.random.RandomGenerator;
 import java.util.stream.Collectors;
@@ -6,9 +7,8 @@ import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
-
 /*
- * THIS FILE WAS UPDATED IN 29/05/23
+ * THIS FILE WAS UPDATED IN 04/06/23
  * DO NOT USE EARLIER VERSIONS
  */
 
@@ -54,12 +54,24 @@ public class HashingUtils {
                                                  z_ASCII
                                                  + 1)
                                            .limit(length)
-                                           .distinct()
                                            .collect(StringBuilder::new,
-                                                    StringBuilder::appendCodePoint,
-                                                    StringBuilder::append)
+                             StringBuilder::appendCodePoint,
+                             StringBuilder::append)
                                            .toString())
+                   .distinct()
                    .collect(Collectors.toList());
+    }
+    
+    public String[] genUniqueStringsArray(int numOfItemsToGen, int stringMinLength, int stringMaxLength) {
+    	List<String> lst = genUniqueStrings(numOfItemsToGen, stringMinLength, stringMaxLength);
+    	String[]res = new String[lst.size()];
+    	int i = 0;
+    	for (Iterator iterator = lst.iterator(); iterator.hasNext();) {
+			String string = (String) iterator.next();
+			res[i] = string;
+			i++;
+		}
+    	return res;
     }
 
     private static Pair<Integer, Long> calculateEvenDivisorSplit(long num) {
@@ -72,7 +84,7 @@ public class HashingUtils {
         return new Pair<>(s, num);
     }
 
-    private static long multiplyMod(long a, long b, long mod) {
+    public static long multiplyMod(long a, long b, long mod) {
         final BigInteger aBig = BigInteger.valueOf(a);
         final BigInteger bBig = BigInteger.valueOf(b);
         final BigInteger multiplyRes = aBig.multiply(bBig);
@@ -114,7 +126,7 @@ public class HashingUtils {
             for (int j = 0; j < s; ++j) {
                 y = multiplyMod(x, x, suspect);
 
-                if (y == 1 && x != 1 && x != suspect - 1) {
+                if ((y == 1) && (x != 1) && (x != suspect - 1)) {
                     return false;
                 }
 

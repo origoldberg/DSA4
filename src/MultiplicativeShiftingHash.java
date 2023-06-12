@@ -1,13 +1,17 @@
 import java.util.Random;
 
 public class MultiplicativeShiftingHash implements HashFactory<Long> {
-    public MultiplicativeShiftingHash() {
-        throw new UnsupportedOperationException("Replace this by your implementation");
+    Random rand;
+    HashingUtils hu;
+	public MultiplicativeShiftingHash() {
+        rand = new Random();
+        hu = new HashingUtils();
     }
 
     @Override
     public HashFunctor<Long> pickHash(int k) {
-        throw new UnsupportedOperationException("Replace this by your implementation");
+        long a = hu.genLong(2, Long.MAX_VALUE);
+        return new Functor(a, k);
     }
 
     public class Functor implements HashFunctor<Long> {
@@ -15,9 +19,15 @@ public class MultiplicativeShiftingHash implements HashFactory<Long> {
         final private long a;
         final private long k;
 
-        @Override
+        public Functor(long a, long k) {
+			super();
+			this.a = a;
+			this.k = k;
+		}
+
+		@Override
         public int hash(Long key) {
-            throw new UnsupportedOperationException("Replace this by your implementation");
+            return (int)(a*key)>>>(64-k);
         }
 
         public long a() {

@@ -30,7 +30,7 @@ public class Test {
 		}
 		
 		for (int i = 0; i <= 10; i++) {
-			System.out.println("Rank(" + i + ") = " + sl.rank(i * 2));
+			System.out.println("Rank(" + i  *2 + ") = " + sl.rank(i * 2));
 		}
 	}
 	
